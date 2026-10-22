@@ -5,19 +5,25 @@ NAMESPACE="kubepilot"
 DEPLOYMENT="kubepilot-health"
 SERVICE="kubepilot-health"
 
+echo "==> Validating base Kubernetes manifests..."
+kubectl kustomize k8s/base > /dev/null
+
+echo "==> Validating development overlay..."
+kubectl kustomize k8s/overlays/dev > /dev/null
+
 echo "==> Checking Kubernetes connectivity..."
-kubectl cluster-info >/dev/null
+kubectl cluster-info > /dev/null
 
 echo "==> Checking namespace..."
-kubectl get namespace "$NAMESPACE" >/dev/null
+kubectl get namespace "$NAMESPACE" > /dev/null
 
-echo "==> Checking deployment availability..."
+echo "==> Checking deployment rollout..."
 kubectl rollout status "deployment/$DEPLOYMENT" \
   --namespace "$NAMESPACE" --timeout=60s
 
 echo "==> Checking service..."
 kubectl get service "$SERVICE" \
-  --namespace "$NAMESPACE" >/dev/null
+  --namespace "$NAMESPACE" > /dev/null
 
 echo "==> Checking ready service endpoints..."
 ENDPOINTS="$(kubectl get endpointslices \
