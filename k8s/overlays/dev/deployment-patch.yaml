@@ -1,0 +1,9 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: kubepilot-health
+spec:
+  template:
+    metadata:
+      labels:
+        environment: dev
