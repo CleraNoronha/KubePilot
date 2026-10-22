@@ -1,0 +1,30 @@
+name: KubePilot Validation
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+    branches: [main]
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    name: Validate platform configuration
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up kubectl
+        uses: azure/setup-kubectl@v4
+        with:
+          version: latest
+
+      - name: Validate Kubernetes manifests
+        run: kubectl kustomize k8s/base > /tmp/kubepilot-manifests.yaml
+
+      - name: Check shell script syntax
+        run: bash -n scripts/validate-platform.sh
