@@ -24,3 +24,13 @@ venv/
 .DS_Store
 .vscode/
 .idea/
+
+# Terraform local files
+terraform/.terraform/
+terraform/*.tfstate
+terraform/*.tfstate.*
+terraform/crash.log
+terraform/crash.*.log
+terraform/*.tfplan
+terraform/*.tfvars
+terraform/*.tfvars.json
