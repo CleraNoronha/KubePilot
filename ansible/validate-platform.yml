@@ -1,0 +1,45 @@
+---
+- name: Validate KubePilot Kubernetes Platform
+  hosts: localhost
+  connection: local
+  gather_facts: false
+
+  tasks:
+    - name: Check Kubernetes cluster connectivity
+      ansible.builtin.command:
+        cmd: kubectl cluster-info
+      register: cluster_info
+      changed_when: false
+
+    - name: Verify KubePilot namespace exists
+      ansible.builtin.command:
+        cmd: kubectl get namespace kubepilot
+      register: namespace_check
+      changed_when: false
+
+    - name: Verify KubePilot deployment rollout
+      ansible.builtin.command:
+        cmd: kubectl rollout status deployment/kubepilot-health -n kubepilot --timeout=60s
+      register: deployment_check
+      changed_when: false
+
+    - name: Verify KubePilot service exists
+      ansible.builtin.command:
+        cmd: kubectl get service kubepilot-health -n kubepilot
+      register: service_check
+      changed_when: false
+
+    - name: Verify Terraform-managed ConfigMap exists
+      ansible.builtin.command:
+        cmd: kubectl get configmap kubepilot-config -n kubepilot
+      register: configmap_check
+      changed_when: false
+
+    - name: Display validation summary
+      ansible.builtin.debug:
+        msg:
+          - "Kubernetes connectivity: PASS"
+          - "KubePilot namespace: PASS"
+          - "Deployment rollout: PASS"
+          - "KubePilot service: PASS"
+          - "Terraform-managed ConfigMap: PASS"
